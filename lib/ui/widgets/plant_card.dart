@@ -27,7 +27,7 @@ class PlantCard extends StatelessWidget {
           children: [
             Stack(
               children: [
-                Image.asset(plant.imagePath, width: 280, height: 200, fit: BoxFit.cover),
+                Image.asset(plant.image, width: 280, height: 200, fit: BoxFit.cover),
                 Positioned(
                   top: 12,
                   left: 12,
