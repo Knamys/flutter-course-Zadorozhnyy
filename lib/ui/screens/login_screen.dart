@@ -1,9 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'catalog_screen.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import '../bloc/plants_bloc.dart';
-import '../bloc/plants_event.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -24,6 +20,19 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
+  String _message(String code) {
+    return switch (code) {
+      'invalid-email' => 'Введите корректный email',
+      'weak-password' => 'Пароль слишком короткий (минимум 6 символов)',
+      'email-already-in-use' => 'Этот email уже занят',
+      'invalid-credential' ||
+      'wrong-password' ||
+      'user-not-found' =>
+        'Неверный email или пароль',
+      _ => 'Ошибка: $code',
+    };
+  }
+
   Future<void> _submit({required bool register}) async {
     final auth = FirebaseAuth.instance;
     try {
@@ -38,18 +47,8 @@ class _LoginScreenState extends State<LoginScreen> {
           password: _password.text,
         );
       }
-      if (!mounted) return;
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (_) => BlocProvider(
-          create: (_) => PlantsBloc()..add(PlantsLoadRequested()),
-          child: const CatalogScreen(),
-        ),
-  ),
-);
     } on FirebaseAuthException catch (e) {
-      setState(() => _error = e.code);
+      setState(() => _error = _message(e.code));
     }
   }
 
@@ -65,6 +64,11 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
+                const Text('Каталог растений-хищников',
+                    textAlign: TextAlign.center,
+                    style:
+                        TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                const SizedBox(height: 24),
                 TextField(
                   controller: _email,
                   decoration: const InputDecoration(labelText: 'Email'),

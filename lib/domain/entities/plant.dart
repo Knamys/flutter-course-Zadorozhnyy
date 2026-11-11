@@ -23,14 +23,15 @@ class Plant {
   });
 
   factory Plant.fromFirestore(DocumentSnapshot<Map<String, dynamic>> doc) {
-    final data = doc.data()!;
+    final data = doc.data() ?? {};
     return Plant(
       id: doc.id,
-      name: data['name'] as String,
-      latinName: data['latinName'] as String,
-      category: PlantCategory.values.byName(data['category'] as String),
-      feature: data['feature'] as String,
-      image: data['image'] as String,
+      name: data['name'] as String? ?? '',
+      latinName: data['latinName'] as String? ?? '',
+      category:
+          PlantCategory.values.byName(data['category'] as String? ?? 'swamp'),
+      feature: data['feature'] as String? ?? '',
+      image: data['image'] as String? ?? '',
       description: data['description'] as String?,
     );
   }
